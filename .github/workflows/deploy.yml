@@ -35,18 +35,22 @@ jobs:
         # Install Heroku CLI
       - name: Install Heroku CLI
         run: |
-          curl https://cli-assets.heroku.com/install.sh | sh
+          curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
           echo "Heroku CLI installed"
 
       # Set up Heroku authentication (make sure you add HEROKU_API_KEY as a secret in GitHub)
-      - name: Heroku Authentication
+      - name: Authenticate with Heroku
         run: |
-          echo "machine api.heroku.com" > ~/.netrc
-          echo "  login ${{ secrets.HEROKU_EMAIL }}" >> ~/.netrc
-          echo "  password ${{ secrets.HEROKU_API_KEY }}" >> ~/.netrc
-        env:
-          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          echo "machine api.heroku.com
+          login ${{ secrets.HEROKU_EMAIL }}
+          password ${{ secrets.HEROKU_API_KEY }}" > ~/.netrc
+          echo "machine git.heroku.com
+          login ${{ secrets.HEROKU_EMAIL }}
+          password ${{ secrets.HEROKU_API_KEY }}" >> ~/.netrc
+          chmod 600 ~/.netrc
+
+      - name: Set Heroku Git Remote
+        run: heroku git:remote -a ${{ secrets.HEROKU_APP_NAME }}
 
       # Deploy to Heroku
       - name: Deploy to Heroku
