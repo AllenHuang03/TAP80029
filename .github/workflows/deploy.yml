@@ -8,23 +8,36 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Upgrade pip & Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run Flask App (for test)
-        run: python app.py & sleep 5 && curl -f http://127.0.0.1:5000/health
+      - name: Run Tests (Optional)
+        run: pytest tests/
+
+      - name: Run Flask App for Health Check
+        run: |
+          python app.py &
+          sleep 5
+          curl -f http://127.0.0.1:5000/health
 
       - name: Deploy to Heroku (Optional)
+        if: success()
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: "cosmic-lighthouse-map"
         run: |
+          echo "Deploying to Heroku..."
+          heroku login -i
           git push heroku main
