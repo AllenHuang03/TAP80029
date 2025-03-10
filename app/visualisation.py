@@ -1,9 +1,15 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
-def plot_lightcurve(df):
-    plt.figure(figsize=(10, 5))
-    plt.plot(df["time"], df["flux"], label="Light Curve")
-    plt.xlabel("Time")
-    plt.ylabel("Flux")
+def plot_light_curve():
+    time = np.linspace(0, 10, 100)
+    flux = np.sin(time) + np.random.normal(0, 0.1, len(time))
+
+    plt.figure(figsize=(8, 4))
+    plt.plot(time, flux, marker="o", linestyle="-", color="b", label="Pulsar Light Curve")
+    plt.xlabel("Time (seconds)")
+    plt.ylabel("Flux Intensity")
+    plt.title("Pulsar Light Curve")
     plt.legend()
-    plt.show()
+    plt.grid()
+    plt.savefig("frontend/static/light_curve.png")  # Save image for UI

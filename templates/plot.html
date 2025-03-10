@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <div id="plot"></div>
+    <script>
+        // Ensure the JSON is safely parsed
+        var graph = JSON.parse('{{ graph_json | tojson | safe }}');
+        Plotly.newPlot('plot', graph.data, graph.layout);
+    </script>
+</body>
+
+</html>

@@ -65,3 +65,9 @@ jobs:
         run: |
           git push heroku main --force
           echo "🚀 Deployment to Heroku completed"
+
+      - name: Run Updater
+        run: python app/updater.py
+
+      - name: Restart Server
+        run: ./run.sh
